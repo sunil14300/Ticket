@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>Details</title>
+    <style>
+        .status-open {
+            color: orange;
+        }
+        .status-in-progress {
+            color: green;
+        }
+        .status-closed {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">Navbar</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="AllTickets.html">All Tickets</a>
+                    </li>
+                </ul>
+                <form class="d-flex" onsubmit="filterTickets(event)">
+                    <input class="form-control me-2" type="search" id="searchQuery" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-light" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <h1 class="text-center">All Tickets</h1>
+    <table class="table table-striped">
+        <thead>    
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Ticket ID</th>
+                <th scope="col">Title</th>
+                <th scope="col">Category</th>
+                <th scope="col">Priority</th>
+                <th scope="col">Description</th>
+                <th scope="col">Client</th>
+                <th scope="col">Details</th>
+                <th scope="col">Status</th>
+            </tr>
+        </thead>
+        <tbody id="ticketsBody">
+            <!-- Dynamic rows will be inserted here -->
+        </tbody>
+    </table>
+
+    <script>
+        async function getData() {
+            const Id = localStorage.getItem('Id');
+            const url =`https://localhost:7246/api/Ticket/getTickets?id=${Id}`;
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`Response status: ${response.status}`);
+                }
+                const json = await response.json();
+                console.log("Fetched data:", json); // Log fetched data
+                return json;
+            } catch (error) {
+                console.error(error.message);
+                return [];
+            }
+        }
+
+        function getClientName(clientID) {
+            switch(clientID) {
+                case 1: return 'Hospitality';
+                case 2: return 'Transportation';
+                case 3: return 'Corporate Office';
+                case 4: return 'Tech Company';
+                case 5: return 'Agriculture';
+                default: return 'Unknown';
+            }
+        }
+
+        function displayData(data) {
+            const tableBody = document.getElementById('ticketsBody');
+            tableBody.innerHTML = ''; // Clear any existing rows
+
+            data.forEach(ticket => {
+                if (ticket.id == localStorage.getItem('Id')) {
+                    const row = document.createElement('tr');
+                    let statusClass = '';
+
+                    if (ticket.userName.toLowerCase() === 'open') {
+                        statusClass = 'status-open';
+                    } else if (ticket.userName.toLowerCase() === 'in progress') {
+                        statusClass = 'status-in-progress';
+                    } else if (ticket.userName.toLowerCase() === 'closed') {
+                        statusClass = 'status-closed';
+                    }
+
+                    const clientName = getClientName(ticket.clientID);
+
+                    row.innerHTML = `
+                        <th scope="row">${ticket.ticketID}</th>
+                        <td>${ticket.tid}</td>
+                        <td>${ticket.title}</td>
+                        <td>${ticket.category}</td>
+                        <td>${ticket.priority}</td>
+                        <td>${ticket.description}</td>      
+                        <td>${clientName}</td>
+                        <td><a href="Details.html" onclick="setTicketID(${ticket.ticketID})">Details</a></td>  
+                        <td class="${statusClass}">${ticket.userName}</td>
+                    `;
+                    tableBody.appendChild(row);
+                }
+            });
+        }
+
+        function setTicketID(ticketID) {
+            localStorage.setItem('ticketID', ticketID);
+        }
+
+        async function filterTickets(event) {
+            event.preventDefault();
+            const searchQuery = document.getElementById('searchQuery').value.toLowerCase();
+            const data = await getData();
+
+            const filteredData = data.filter(ticket => {
+                const matchesSearchQuery = ticket.title.toLowerCase().includes(searchQuery) ||
+                                        ticket.category.toLowerCase().includes(searchQuery) ||
+                                        ticket.priority.toLowerCase().includes(searchQuery) ||
+                                        ticket.description.toLowerCase().includes(searchQuery);
+                return matchesSearchQuery && ticket.id == localStorage.getItem('Id');
+            });
+
+            displayData(filteredData);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            getData().then(displayData);
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+</html>

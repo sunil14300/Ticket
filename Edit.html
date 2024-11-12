@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style>
+      body {
+        background-color: #f0f8ff;
+        font-family: Arial, sans-serif;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 50px auto;
+        background: #fff;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+      }
+
+      h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #007bff;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #333;
+      }
+
+      input[type="text"], textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        transition: border-color 0.3s;
+      }
+
+      input[type="text"]:focus, textarea:focus {
+        border-color: #007bff;
+      }
+
+      textarea {
+        height: 100px;
+      }
+
+      button[type="submit"] {
+        display: inline-block;
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      button[type="submit"]:hover {
+        background-color: #0056b3;
+      }
+
+      /* Animation */
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      .container {
+        animation: fadeIn 1s ease-in-out;
+      }
+
+      input[type="text"], textarea {
+        animation: fadeIn 1.5s ease-in-out;
+      }
+
+      button[type="submit"] {
+        animation: fadeIn 2s ease-in-out;
+      }
+      h2{
+        font-size: 30px;
+        font-weight: bold;
+        text-shadow:0px 3px 3px grey;
+      }
+    </style>
+    <title>Edit</title>
+  </head>
+  <body>
+    <div class="container">
+        <h2>Edit Form</h2>
+        <form id="editForm">
+
+            <label for="title">Ticket Id</label>
+          <input type="text" name="Id" id="Id" placeholder="Enter ticket id" required>
+          <label for="title">Title</label>
+          <input type="text" name="title" id="title" placeholder="Enter Title" required>
+          
+          <label for="description">Description</label>
+          <textarea name="description" id="description" placeholder="Enter Description" required></textarea>
+          <label for="category">Category</label>
+          <input type="text" name="category" id="category" placeholder="Enter Category" required>
+          <label for="priority">Priority</label>
+          <input type="text" name="priority" id="priority" placeholder="Enter Priority" required>
+          <label for="client">Client</label>
+          <input type="text" id="client" placeholder="Enter Client" required>
+          <label for="user">User</label>
+          <input type="text" id="user" placeholder="Enter User" required>
+          <button type="submit" id="btn">Submit</button>
+        </form>
+      </div>
+    
+      <script>
+        document.getElementById('editForm').addEventListener('submit', function(event) {
+          event.preventDefault();
+          
+        //   const ticketID = 1; // Example ticket ID. You should get the actual ticket ID you want to update.
+          
+          const ticketID=document.getElementById('Id').value;
+          const title = document.getElementById('title').value;
+          const description = document.getElementById('description').value;
+          const category = document.getElementById('category').value;
+          const priority = document.getElementById('priority').value;
+          const client = document.getElementById('client').value;
+          const user = document.getElementById('user').value;
+          
+          const data = {
+            TID: ticketID,
+            Title: title,
+            Description: description,
+            Category: category,
+            Priority: priority,
+            ClientID: client,
+            UserName: user
+          };
+          
+          fetch('https://localhost:7246/api/Ticket/update', {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+          })
+          .then(response => {
+            if (!response.ok) {
+              return response.json().then(err => {
+                throw new Error(JSON.stringify(err));
+              });
+            }
+            return response.json();
+          })
+          .then(data => {
+            console.log('Success:', data);
+            alert('Ticket updated successfully');
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+            alert('Failed to update ticket');
+          });
+        });
+      </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  </body>
+</html>

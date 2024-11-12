@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="data">data</div>
+
+    <script>
+
+        async function abc(){
+            var url="https://localhost:7246/api/Registration/registration";
+            try{
+                const response=await fetch(url);
+                if(!response.ok){
+                    throw new error(`Response status: ${response.status}`)
+                }
+                const json=await response.json();
+                displayData(json);
+            }catch(error){
+               console.log(error);
+            }
+
+        function displayData(data){
+            var a=document.getElementById('data');
+            a.innerText = JSON.stringify(data, null, 2);
+        }
+        }
+        abc();
+
+    </script>
+
+</body>
+</html>

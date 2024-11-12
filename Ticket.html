@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit a Ticket</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: linear-gradient(blue,lightblue,white);
+            margin: 0;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .container {
+           
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 1);
+            margin-bottom: 20px;
+            width: 400px;
+        }
+
+        .container h2 {
+            font-size: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #fff;
+            font-weight: bold;
+            text-shadow: 0 3px 2px gray;
+        }
+
+        .container label {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .container input[type="text"],
+        .container textarea,
+        .container select,
+        .container input[type="file"],
+        .container input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .container textarea {
+            resize: vertical;
+        }
+
+        .container input[type="submit"] {
+            background-color: blue;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .container input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .navbar-nav .nav-link:hover {
+        background-color: blue !important;
+        border-radius:5px ;
+        }
+        
+    </style>
+</head>
+<body>
+    <section>
+        <div class='air air1'></div>
+        <div class='air air2'></div>
+        <div class='air air3'></div>
+        <div class='air air4'></div>
+      </section>
+    
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="User.html">Navbar</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="User.html">Home</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="Sign.html">SignUp</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="Login.html">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>Submit a Ticket</h2>
+        <form id="ticketForm" action="https://localhost:7246/api/Ticket/submit" method="post" enctype="multipart/form-data">
+            <label for="ticketID">ID</label>
+            <input type="text" placeholder="Same Login ID" name="TicketID" required>
+    
+            <label for="title">Title</label>
+            <input type="text" placeholder="Enter Title" name="Title" required>
+
+    
+            <label for="description">Description</label>
+            <textarea placeholder="Enter Description" name="Description" rows="4" required></textarea>
+    
+            <label for="category">Category/Type of Issue</label>
+            <select name="Category" required>
+                <option value="">Select Category</option>
+                <option value="Network">Network</option>
+                <option value="Software">Software</option>
+                <option value="Hardware">Hardware</option>
+                <option value="Other">Other</option>
+            </select>
+    
+            <label for="priority">Priority</label>
+            <select name="Priority" required>
+                <option value="">Select Priority</option>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+            </select>
+    
+            <label for="client">Client</label>
+            <select name="ClientID" required>
+                <option value="">Select Client</option>
+                <option value="1">Hospitality</option>
+                <option value="2">Transportation</option>
+                <option value="3">Corporate Office</option>
+                <option value="4">Tech Company</option>
+                <option value="5">Agriculture</option>
+            </select>
+    
+            <label for="user">User</label>
+            <select name="ID" required>
+                <option value="">Select User</option>
+                <option value="1">Pushpendra</option>
+                <option value="2">Sunil</option>
+                <option value="3">Mukesh</option>
+            </select>
+    
+            <input type="submit" value="Submit">
+        </form>
+        <div id="responseMessage"></div>
+    </div>
+    
+    
+    <script>
+
+document.getElementById('ticketForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+
+    fetch('https://localhost:7246/api/Ticket/submit', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json()) // Use .json() to directly parse the response as JSON
+    .then(data => {
+        console.log('Parsed response:', data);
+        if (data.statusCode === 200) {
+            // Store ticket ID in localStorage
+            localStorage.setItem('ticketID', data.ticket.ticketID);
+            
+            swal({
+                title: "Good job!",
+                text: "You have successfully submitted the ticket!",
+                icon: "success",
+                button: "Ok",
+            }).then(() => {
+                window.location.href = 'user.html';
+            });
+
+        } else {
+            responseMessage.style.color = 'red';
+            alert('Failed to submit the ticket: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to submit the ticket');
+    });
+});
+
+
+
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+
+</body> 
+</html>

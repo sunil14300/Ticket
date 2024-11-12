@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .container {
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.7);
+            width: 400px;
+            text-align: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1001; /* Ensure the container is above the waves */
+        }
+
+        .container h2 {
+            margin-bottom: 20px;
+            color: white;
+          font-size: 40px;
+            font-weight: bold;
+            text-shadow: 0 3px 2px grey;
+        }
+
+        .container label {
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+            text-align: left;
+        }
+
+        .container input[type="text"],
+        .container input[type="password"],
+        .container button[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .container button[type="submit"] {
+            background-color: rgba(0, 0, 255, 0.805);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .container button[type="submit"]:hover {
+            background-color: rgba(0, 0, 255, 0.745);
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .signup-link a {
+            color:blue;
+            text-decoration: none;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+        #responseMessage {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        section {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            background: #3586ff;
+            overflow: hidden;
+        }
+        section .air {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url(https://1.bp.blogspot.com/-xQUc-TovqDk/XdxogmMqIRI/AAAAAAAACvI/AizpnE509UMGBcTiLJ58BC6iViPYGYQfQCLcBGAsYHQ/s1600/wave.png);
+            background-size: 1000px 100px;
+        }
+        section .air.air1 {
+            animation: wave 30s linear infinite;
+            z-index: 1000;
+            opacity: 1;
+            animation-delay: 0s;
+            bottom: 0;
+        }
+        section .air.air2 {
+            animation: wave2 15s linear infinite;
+            z-index: 999;
+            opacity: 0.5;
+            animation-delay: -5s;
+            bottom: 10px;
+        }
+        section .air.air3 {
+            animation: wave 30s linear infinite;
+            z-index: 998;
+            opacity: 0.2;
+            animation-delay: -2s;
+            bottom: 15px;
+        }
+        section .air.air4 {
+            animation: wave2 5s linear infinite;
+            z-index: 997;
+            opacity: 0.7;
+            animation-delay: -5s;
+            bottom: 20px;
+        }
+        @keyframes wave {
+            0% {
+                background-position-x: 0px; 
+            }
+            100% {
+                background-position-x: 1000px; 
+            }
+        }
+        @keyframes wave2 {
+            0% {
+                background-position-x: 0px; 
+            }
+            100% {
+                background-position-x: -1000px; 
+            }
+        }
+    </style>
+</head>
+<body>
+    <section>
+        <div class='air air1'></div>
+        <div class='air air2'></div>
+        <div class='air air3'></div>
+        <div class='air air4'></div>
+        <div class="container">
+            <h2>Login</h2>
+            <form id="loginForm">
+                <label for="Id">Id</label>
+                <input type="text" placeholder="Enter your Id" name="Id" required>
+                
+                <label for="psw">Password</label>
+                <input type="password" placeholder="Enter Password" name="psw" required>
+                
+                <button type="submit">Login</button>
+            </form>
+            <div class="signup-link">
+                Don't have an account? <a href="Sign.html">Sign up here</a>
+            </div>
+            <div id="responseMessage"></div>
+        </div>
+    </section>
+    
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+    
+            const formData = new FormData(event.target);
+            const data = {
+                Id: formData.get('Id'),
+                passwordHash: formData.get('psw') // This should be hashed properly
+            };
+    
+            fetch('https://localhost:7246/api/Registration/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                const responseMessage = document.getElementById('responseMessage');
+                if (data.success) {
+                    responseMessage.style.color = 'green';
+                    responseMessage.innerText = 'Login successful!';
+                    // Set the user ID in localStorage
+                    localStorage.setItem('Id', formData.get('Id'));
+                    if (data.isAdmin) {
+                        window.location.href = 'index.html'; // Redirect to index.html for admin
+                    } else {
+                        window.location.href = 'User.html'; // Redirect to User.html for regular users
+                    }
+                } else {
+                    responseMessage.style.color = 'red';
+                    responseMessage.innerText = data.message; // Display backend error message
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                responseMessage.style.color = 'red';
+                responseMessage.innerText = 'An error occurred. Please try again.'; // Generic error message
+            });
+        });
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- <meta charset="UTF-8"> -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+ <link rel="stylesheet" href="style.css">
+ <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</head>
+<body>
+  
+    <!-- navbar -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="index.html">Navbar</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+              </li>     
+               
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="AllTickets.html">All Tickets</a>
+              </li>
+            </ul>
+
+            <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="Login.html">Login</a>
+              </li>
+               <button class="btn btn-primary" onclick="logout()">Logout</button>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+    <!-- end navbar -->
+
+  <div class="container-fluid">
+    <h1 class="my-5 text-center head">Ticket Management System</h1>
+    <div class="row text-center justify-content-center">
+      <div class="col-sm-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title" style="background-color: #184ee34c">Open Tickets</h5>
+            <p class="card-text" id="open">0</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title" style="background-color: #184ee34c">Closed Tickets</h5>
+            <p class="card-text" id="closed">0</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title" style="background-color: #184ee34c">In Progress</h5>
+            <p class="card-text" id="inprogress">0</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title" style="background-color: #184ee34c">All Tickets</h5>
+            <p class="card-text" id="alltickets">0</p>
+          </div>
+        </div>
+      </div>
+     
+    </div>
+
+    <div class="row mt-5">
+      <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title text-center" style="background-color: #184ee3a9">Unresolved Tickets by Priority</h5>
+                <div class="chart-container">
+                    <canvas id="priorityChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-body">
+            <div style="background-color: #184ee3a9">
+                <h5 class="card-title text-center">Unresolved Tickets by Status</h5>
+            </div>
+            
+            <p class="card-title">Open</p>
+            <div class="progress" id="openProgress" role="progressbar" aria-label="Open" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+              <div class="progress-bar" id="OpenProgressBar" style="width: 0%; background-color: #36A2EB;">0</div>
+            </div>
+            <p class="card-title">In progress</p>
+            <div class="progress" id="InProgress" role="Inprogressbar" aria-label="InProgress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+              <div class="progress-bar" id="InProgressBar" style="width: 0%; background-color: #36A2EB;">0</div>
+            </div>
+            <p class="card-title">Closed</p>
+            <div class="progress" id="closedProgress" role="progressbar" aria-label="Closed" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+              <div class="progress-bar" id="closedProgressBar" style="width: 0%; background-color: #FFCE56;">0</div>
+            </div>
+            <p class="card-title">Total Tickets</p>
+            <div class="progress" id="totalProgress" role="progressbar" aria-label="totalTickets" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+              <div class="progress-bar" id="totalProgressBar" style="width: 0%; background-color: #36A2EB;">0</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title text-center" style="background-color: #184ee3a9">New & Open Tickets Category-wise</h5>
+                <p class="card-title">Network</p>
+                <div class="progress" id="networkProgress" role="progressbar" aria-label="Network" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-bar" id="networkProgressBar" style="width: 0%; background-color: #36A2EB;">0</div>
+                </div>
+                <p class="card-title">Software</p>
+                <div class="progress" id="softwareProgress" role="progressbar" aria-label="Software" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-bar" id="softwareProgressBar" style="width: 0%; background-color: #FFCE56;">0</div>
+                </div>
+                <p class="card-title">Other</p>
+                <div class="progress" id="otherProgress" role="progressbar" aria-label="Other" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-bar" id="otherProgressBar" style="width: 0%; background-color: #36A2EB;">0</div>
+                </div>
+                <p class="card-title">Hardware</p>
+                <div class="progress" id="hardwareProgress" role="progressbar" aria-label="Hardware" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-bar" id="hardwareProgressBar" style="width: 0%; background-color: #FF6384;">0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <h1 class="text-center head my-4">All Tickets</h1>
+   <div class="table-container">
+        <table class="table table-striped">
+            <thead>    
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Ticket ID</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Priority</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Client</th>
+                    <th scope="col">User</th>
+                    <th scope="col">Created Date</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Message</th>
+                </tr>
+            </thead>
+            <tbody id="ticketsBody">
+                <!-- Dynamic rows will be inserted here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+     document.addEventListener("DOMContentLoaded", function() {
+    // Replace with actual userId from localStorage
+    const Id = localStorage.getItem('Id');
+
+    if (!Id) {
+        // Handle case where Id is not found in localStorage (e.g., redirect to login)
+        window.location.href = 'login.html';
+        return;
+    }
+
+    fetch(`https://localhost:7246/api/Ticket/getTickets?id=${Id}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Data fetched from API for Id', Id, ':', data);
+
+            // Initialize counts for each category, priority level, and status
+            let networkCount = 0;
+            let softwareCount = 0;
+            let otherCount = 0;
+            let hardwareCount = 0;
+            let highCount = 0;
+            let mediumCount = 0;
+            let lowCount = 0;
+            let open = 0;
+            let inProgress = 0;
+            let closed = 0;
+
+            // Count tickets in each category, by priority, and by status
+            data.forEach(ticket => {
+                if (ticket.id == Id) {
+                    switch (ticket.category) {
+                        case 'Network':
+                            networkCount++;
+                            break;
+                        case 'Software':
+                            softwareCount++;
+                            break;
+                        case 'Other':
+                            otherCount++;
+                            break;
+                        case 'Hardware':
+                            hardwareCount++;
+                            break;
+                    }
+
+                    switch (ticket.priority) {
+                        case 'high':
+                            highCount++;
+                            break;
+                        case 'medium':
+                            mediumCount++;
+                            break;
+                        case 'low':
+                            lowCount++;
+                            break;
+                    }
+
+                    switch (ticket.userName) {
+                        case 'Open':
+                            open++;
+                            break;
+                        case 'In Progress':
+                            inProgress++;
+                            break;
+                        case 'Closed':
+                            closed++;
+                            break;
+                    }
+                }
+            });
+
+            // Calculate total tickets for percentage calculations
+            var totalTickets = networkCount + softwareCount + otherCount + hardwareCount;
+
+            // Calculate percentage values
+            var networkPercent = (networkCount / totalTickets) * 100;
+            var softwarePercent = (softwareCount / totalTickets) * 100;
+            var otherPercent = (otherCount / totalTickets) * 100;
+            var hardwarePercent = (hardwareCount / totalTickets) * 100;
+
+            var openPercent = (open / totalTickets) * 100;
+            var inProgressPercent = (inProgress / totalTickets) * 100;
+            var closedPercent = (closed / totalTickets) * 100;
+
+            console.log(`Network: ${networkCount} (${networkPercent}%)`);
+            console.log(`Software: ${softwareCount} (${softwarePercent}%)`);
+            console.log(`Other: ${otherCount} (${otherPercent}%)`);
+            console.log(`Hardware: ${hardwareCount} (${hardwarePercent}%)`);
+
+            // Update progress bars
+            document.getElementById('networkProgressBar').style.width = networkPercent + '%';
+            document.getElementById('networkProgressBar').textContent = networkCount;
+
+            document.getElementById('softwareProgressBar').style.width = softwarePercent + '%';
+            document.getElementById('softwareProgressBar').textContent = softwareCount;
+
+            document.getElementById('otherProgressBar').style.width = otherPercent + '%';
+            document.getElementById('otherProgressBar').textContent = otherCount;
+
+            document.getElementById('hardwareProgressBar').style.width = hardwarePercent + '%';
+            document.getElementById('hardwareProgressBar').textContent = hardwareCount;
+
+            document.getElementById('OpenProgressBar').style.width=openPercent+"%";
+            document.getElementById('OpenProgressBar').textContent=open;
+            
+            document.getElementById('InProgressBar').style.width=inProgress+"%";
+            document.getElementById('InProgressBar').textContent=inProgress;
+
+            document.getElementById('closedProgressBar').style.width=closedPercent+"%";
+            document.getElementById('closedProgressBar').textContent=closed;
+
+            document.getElementById('totalProgressBar').style.width = totalTickets + '%';
+            document.getElementById('totalProgressBar').textContent = totalTickets;
+            document.getElementById('alltickets').textContent = totalTickets;
+
+            document.getElementById('open').innerHTML = open;
+            document.getElementById('closed').innerHTML = closed;
+            document.getElementById('inprogress').innerHTML = inProgress;
+
+            // Update the doughnut chart with the new data
+            var ctxPriority = document.getElementById('priorityChart').getContext('2d');
+
+            var priorityChart = new Chart(ctxPriority, {
+                type: 'doughnut',
+                data: {
+                    labels: ['High', 'Medium', 'Low'],
+                    datasets: [{
+                        data: [highCount, mediumCount, lowCount],
+                        backgroundColor: ['#FF6384', '#FFCE56', '#36A2EB'],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        })
+        .catch(error => console.error('Error fetching data:', error));
+});
+
+function logout() {
+    // Clear localStorage
+    localStorage.removeItem('authToken');
+    // Clear sessionStorage
+    sessionStorage.removeItem('authToken');
+
+    // Clear cookies
+    document.cookie.split(";").forEach((c) => {
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+    });
+
+    // Redirect to login page
+    window.location.href = 'Login.html';
+
+}
+
+// all ticket
+
+
+
+async function getAllTickets() {
+            const url = 'https://localhost:7246/api/Ticket/getTickets';
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const json = await response.json();
+                displayTickets(json);
+            } catch (error) {
+                console.log(`Fetch error: ${error.message}`);
+            }
+        }
+
+        function displayTickets(tickets) {
+            const ticketsBody = document.getElementById('ticketsBody');
+            ticketsBody.innerHTML = ''; // Clear any existing rows
+
+            tickets.forEach(ticket => {
+                const row = document.createElement('tr');
+
+                row.innerHTML = `
+                    <td>${ticket.ticketID}</td>
+                    <td>${ticket.tid}</td>
+                    <td>${ticket.title}</td>
+                    <td>${ticket.category}</td>
+                    <td>${ticket.priority}</td>
+                    <td>${ticket.description}</td>
+                    <td>${ticket.clientID}</td>
+                    <td>${ticket.userName}</td>
+                    <td>${ticket.created}</td>
+                    <td>${ticket.userName}</td>
+                    <td>${ticket.message}</td>
+                `;
+
+                ticketsBody.appendChild(row);
+            });
+        }
+
+        // Call the function to fetch and display tickets on page load
+        document.addEventListener('DOMContentLoaded', getAllTickets);
+
+      </script>        
+
+  
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+</body>
+</html>
